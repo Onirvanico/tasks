@@ -2,7 +2,7 @@
     <!-- Base application theme. -->
     <style name="Theme.Tasks" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/white</item>
+        <item name="colorPrimary">@color/black</item>
         <item name="colorPrimaryVariant">@color/black</item>
         <item name="colorOnPrimary">@color/white</item>
         <item name="android:textColorPrimary">#AA000000</item>
@@ -14,7 +14,7 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
         <item name="android:windowBackground">@color/white</item>
-        <item name="android:navigationBarColor">#0F000000</item>
+        <item name="android:navigationBarColor">#AF000000</item>
 
     </style>
 </resources>

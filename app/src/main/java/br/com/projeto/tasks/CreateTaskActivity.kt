@@ -1,76 +1,86 @@
 package br.com.projeto.tasks
 
-import android.app.DatePickerDialog
-import android.app.Dialog
-import android.content.DialogInterface
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.widget.DatePicker
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.DialogFragment
 import br.com.projeto.tasks.databinding.ActivityCreateTaskBinding
+import br.com.projeto.tasks.extensions.format
+import br.com.projeto.tasks.model.TaskField
+import br.com.projeto.tasks.utils.TimePickerUtil
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.timepicker.MaterialTimePicker
+import com.google.android.material.timepicker.TimeFormat
 import java.util.*
 import java.util.regex.Pattern
 
 class CreateTaskActivity : AppCompatActivity() {
+    val viewModel: TaskViewModel by lazy {
+        TaskViewModelFactory((this.application as TaskApp).db.taskDAO()).create(TaskViewModel::class.java)
+
+    }
+
     lateinit var binding: ActivityCreateTaskBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityCreateTaskBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        binding.taskField = TaskField()
+
 
         val pattern = Pattern.compile("([0-2]\\d)|([3][01])")
         val fourNumbersPattern = Pattern.compile("^\\d{2}[/]\\d{2}$")
 
-        val datePicker = MaterialDatePicker.Builder.datePicker()
+        val datePicker = MaterialDatePicker.Builder.datePicker().build()
 
-        binding.textInputDataLayout.setOnClickListener {
-            /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                val datePicker1 = DatePickerDialog(this)
-                datePicker1.show()
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    datePicker1.datePicker.setOnDateChangedListener { datePicker, year, month, day ->
-                        val monthReal = month + 1
+        val timePicker = MaterialTimePicker.Builder().setTimeFormat(TimeFormat.CLOCK_24H).build()
 
-                        binding.textInputDataLayout.setText("$day/$monthReal/$year")
-                       // Log.i("DATE", "Dia $day / Mês $monthReal / Ano $year" )
-                    }
-                }*/
 
-            val datePickerFragment = DatePickerFragment()
-            datePickerFragment.show(supportFragmentManager, "DatePicker")
+        configInputDate(datePicker)
 
+        binding.textInputTimeLayout.setOnClickListener {
+            timePicker.show(supportFragmentManager, "TimeDialog")
+            timePicker.addOnPositiveButtonClickListener {
+                binding.textInputTimeLayout.setText(
+                    TimePickerUtil.formatHourAndMinute(timePicker.hour, timePicker.minute)
+                )
             }
         }
-        /*binding.textInputDataLayout.addTextChangedListener {
-            if(pattern.matcher(it.toString()).matches()) it?.append("/")
-            if(fourNumbersPattern.matcher(it.toString()).matches()) it?.append("/")
 
-            Log.i("LISTENER", "onCreate: " + it.toString())
+        configCancelButton()
+    }
 
-        }*/
-
-     /*   binding.createTaskButton.setOnClickListener {
-          //  Log.i("TOUCH", "clicado" + Date(datePicker.build().selection ?: 0).time)
-        }*/
-
-    class DatePickerFragment() : DialogFragment(), DatePickerDialog.OnDateSetListener {
-
-        override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-            val c = Calendar.getInstance()
-            val year = c.get(Calendar.YEAR)
-            val month = c.get(Calendar.MONTH)
-            val day = c.get(Calendar.DAY_OF_MONTH)
-
-            // Create a new instance of DatePickerDialog and return it
-            return DatePickerDialog(requireContext(), this, year, month, day)
-        }
-        override fun onDateSet(p0: DatePicker?, year: Int, month: Int, day: Int) {
-            Log.i("DATE", "$day/$month/$year")
+    private fun configCancelButton() {
+        binding.cancelButton.setOnClickListener {
+            finish()
         }
     }
+
+    private fun configInputDate(datePicker: MaterialDatePicker<Long>) {
+        binding.textInputDateLayout.setOnClickListener {
+            datePicker.addOnPositiveButtonClickListener {
+                val date = Date(it)
+
+                binding.textInputDateLayout.setText(date.format())
+                Snackbar.make(binding.root, date.toString(), 4000).show()
+                Log.i("CHOICE", date.toString())
+            }
+            datePicker
+                .show(supportFragmentManager, "Dialog")
+
+        }
+    }
+    /*binding.textInputDataLayout.addTextChangedListener {
+        if(pattern.matcher(it.toString()).matches()) it?.append("/")
+        if(fourNumbersPattern.matcher(it.toString()).matches()) it?.append("/")
+
+        Log.i("LISTENER", "onCreate: " + it.toString())
+
+    }*/
+
+    /*   binding.createTaskButton.setOnClickListener {
+         //  Log.i("TOUCH", "clicado" + Date(datePicker.build().selection ?: 0).time)
+       }*/
 
 }
