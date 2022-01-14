@@ -7,4 +7,9 @@
     <string name="create_task_button">Criar Tarefa</string>
     <string name="data_hint">Data</string>
     <string name="time_hint">Hora</string>
+    <string name="add_task_button_content_description">Botão adicionar tarefa</string>
+    <string name="edit_option_menu">editar</string>
+    <string name="delete_option_menu">apagar</string>
+    <string name="empty_list_message">Quando você criar uma tarefa, \n ela aparecerá aqui</string>
+    <string name="empty_list_img_content_description">Imagem de lista vazia</string>
 </resources>

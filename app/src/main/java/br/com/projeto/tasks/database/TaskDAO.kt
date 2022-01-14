@@ -1,4 +1,4 @@
-package br.com.projeto.tasks
+package br.com.projeto.tasks.database
 
 import androidx.room.*
 import br.com.projeto.tasks.model.Task
@@ -19,7 +19,6 @@ interface TaskDAO {
 
     @Delete
     suspend fun deleteTask(task: Task)
-
 
 
 }
